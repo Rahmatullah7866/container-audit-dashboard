@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: audit_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: container_audit_db
+      MYSQL_USER: audit_user
+      MYSQL_PASSWORD: audit_pass123
+      MYSQL_ROOT_PASSWORD: root_secure_pass123
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: audit_backend
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SECRET_KEY=supersecretkey-devsecops
+      - DEBUG=1
+      - MYSQL_DATABASE=container_audit_db
+      - MYSQL_USER=audit_user
+      - MYSQL_PASSWORD=audit_pass123
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  frontend:
+    build: ./frontend
+    container_name: audit_frontend
+    restart: on-failure
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  mysql_data:

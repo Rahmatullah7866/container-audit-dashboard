@@ -1,0 +1,17 @@
+# Python virtual environments & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+backend/venv/
+*.sqlite3
+
+# Node dependencies & build artifacts
+frontend/node_modules/
+frontend/frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# Environment files & system artifacts
+.env
+.DS_Store
+Thumbs.db
